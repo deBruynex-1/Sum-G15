@@ -10,11 +10,17 @@
       <div class="current-path">
         <h3>当前路径: {{ currentPath }}</h3>
         <button class="back-button" @click="goBack">返回上级目录</button>
+        <button class="index-button" @click="addFileIndex">添加索引</button>
       </div>
       <div class="files-list">
         <div v-for="file in files" :key="file.path" class="file-item">
-          <button v-if="file.directory" class="directory-button" @click="exploreDirectory(file.path)">{{ file.name }}</button>
-          <span v-else class="file-span">{{ file.name }}</span>
+          <div class="file-details">
+            <button v-if="file.directory" class="directory-button" @click="exploreDirectory(file)">{{ file.name }}</button>
+            <span v-else class="file-span">{{ file.name }}</span>
+          </div>
+          <div class="file-checkbox">
+            <input type="checkbox" v-model="selectedFiles" :value="file.path" @click="pathDeal(file)" class="select-checkbox" />
+          </div>
         </div>
       </div>
     </div>
@@ -23,9 +29,9 @@
 
 <style>
 .drives-section {
-  margin-bottom: 20px;
-  background-color: #f2f2f2;
+  width: 33.33%;
   padding: 10px;
+  background-color: #f2f2f2;
 }
 
 .drive-button,
@@ -55,8 +61,9 @@
 }
 
 .files-section {
-  background-color: #f9f9f9;
+  width: 33.67%;
   padding: 10px;
+  background-color: #f9f9f9;
 }
 
 .current-path {
@@ -72,13 +79,26 @@
 }
 
 .file-item {
-  width: calc(100% - 20px);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.file-details {
+  flex-grow: 1;
+}
+
+.file-checkbox {
+  flex-shrink: 0;
+  margin-left: 10px;
 }
 
 .back-button {
+  margin-left: 10px;
+}
+
+.select-checkbox {
   margin-left: 10px;
 }
 
@@ -94,6 +114,7 @@ export default {
       currentPath: '',
       files: [],
       history: [], // 用于存储浏览历史记录
+      selectedFiles: [], // 用于存储选中的文件夹
     };
   },
   mounted() {
@@ -114,10 +135,21 @@ export default {
       this.currentPath = drive;
       this.getFiles(drive);
     },
-    exploreDirectory(path) {
+    exploreDirectory(file) {
       this.history.push(this.currentPath); // 将当前路径加入历史记录
-      this.currentPath = path;
-      this.getFiles(path);
+      if(file.directory){
+        this.currentPath = file.path + '\\' + file.name;
+      }else{
+        this.currentPath = file.path;
+      }
+      
+      this.getFiles(file.path);
+    },
+    pathDeal(file){
+      // if(file.directory){
+      //   this.selectedFiles = file.path + file.name;
+      // }
+      console.log('this.selectedFiles=', this.selectedFiles);
     },
     goBack() {
       if (this.history.length > 0) {
@@ -135,11 +167,38 @@ export default {
       })
         .then(response => {
           this.files = response.data;
+          // this.files.forEach(e=>{
+          //   if(e.directory){
+          //     e.path = e.path + '\\' + e.name;
+          //   }
+          // })
+          console.log('this.files', this.files);
         })
         .catch(error => {
           console.error(error);
         });
-    }
+    },
+
+
+
+    addFileIndex() {
+  // 获取选中的文件夹路径
+  const selectedFolder = this.selectedFiles.toString();
+  // 发起后端请求将选中文件夹下的所有文件路径添加到数据库
+  axios.post('http://localhost:8081/addFileIndex', {
+  
+    folderPath: selectedFolder
+    
+  })
+    .then(response => {
+      console.log('文件索引添加成功');
+      console.log(selectedFolder);
+    })
+    .catch(error => {
+      console.log(selectedFolder);
+      console.error('添加文件索引时出错:', error);
+    });
+},
   }
 };
 </script>
