@@ -9,7 +9,13 @@
 - online: 给出访问域名地址 `url`   
 - PPT & 演示 (5分钟)  
 - 答辩时分别展示：PPT、功能、性能、内存，并且给出源代码地址  
- 
+
+## 技术要求
+- Language: JAVA/C/GO/Shell/nodejs/python ...  
+- Database: file/mysql/mongodb ...  
+- Page: H5/CSS/JS/VUE/REACT ...  
+- Server: FTP/APACHE/NGINX/GIT ...
+  
 ## QfileSearch
 使用VUE框架搭建的Web程序  
 ## demo
