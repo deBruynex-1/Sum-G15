@@ -24,7 +24,14 @@
         </div>
       </div>
     </div>
+    <div class="centered">
+      <FileIndexView />
+    </div>
+    <div class="search-section">
+      <SearchText/>
+    </div>
   </div>
+  
 </template>
 
 <style>
@@ -101,13 +108,32 @@
 .select-checkbox {
   margin-left: 10px;
 }
-
+.centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.search-section {
+  flex: 1;
+  background-color: #fff;
+  padding: 10px;
+}
 </style>
 
 <script>
 import axios from 'axios'
+import FileIndexView from "../src/FileIndexView.vue";
+import SearchText from "../src/SearchText.vue";
+
+
 
 export default {
+  name: "App",
+  components: {
+    FileIndexView, // 注册文件索引视图组件
+    SearchText,
+  },
   data() {
     return {
       drives: [],
