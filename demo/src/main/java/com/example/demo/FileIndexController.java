@@ -20,15 +20,19 @@ public class FileIndexController {
 //public void addFileIndex(@RequestParam(value = "folderPath",required = false) String folderPath) {
 public void addFileIndex(@RequestBody FileIndexVo fileIndexVo) {
     if (fileIndexVo.getFolderPath() == null) {
-       System.out.print("21311321312");
+        System.out.print("21311321312");
     } else {
         List<String> filePaths = new ArrayList<>();
         System.out.print(fileIndexVo.getFolderPath()+"\n");
-        exploreDirectory(new File(fileIndexVo.getFolderPath()), filePaths);
+        String[] folderPaths = fileIndexVo.getFolderPath().split(",");  // 拆分文件夹路径字符串
+        for (String folderPath : folderPaths) {
+            exploreDirectory(new File(folderPath.trim()), filePaths);  // 去除空格并调用 exploreDirectory 方法
+        }
         System.out.print(filePaths);
         fileIndexService.addFilesToIndex(filePaths);
     }
 }
+
 
     private void exploreDirectory(File folder, List<String> filePaths) {
         if (folder.isDirectory()) {
