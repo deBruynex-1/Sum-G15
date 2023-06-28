@@ -1,76 +1,61 @@
 <template>
-  <div>
-    <h2>文件浏览器</h2>
+  <div class="app-container">
     <div class="drives-section">
+      <h2>文件浏览器</h2>
       <div v-for="drive in drives" :key="drive">
         <button class="drive-button" @click="exploreDrive(drive)">{{ drive }}</button>
       </div>
     </div>
-    <div v-if="currentPath" class="files-section">
+    <div class="files-section">
       <div class="current-path">
         <h3>当前路径: {{ currentPath }}</h3>
         <button class="back-button" @click="goBack">返回上级目录</button>
         <button class="index-button" @click="addFileIndex">添加索引</button>
       </div>
-      <div class="files-list">
-        <div v-for="file in files" :key="file.path" class="file-item">
-          <div class="file-details">
-            <button v-if="file.directory" class="directory-button" @click="exploreDirectory(file)">{{ file.name }}</button>
-            <span v-else class="file-span">{{ file.name }}</span>
-          </div>
-          <div class="file-checkbox">
-            <input type="checkbox" v-model="selectedFiles" :value="file.path" @click="pathDeal(file)" class="select-checkbox" />
+      <div class="files-list-container">
+        <div class="files-list">
+          <div v-for="file in files" :key="file.path" class="file-item">
+            <div class="file-details">
+              <button v-if="file.directory" class="directory-button" @click="exploreDirectory(file)">{{ file.name }}</button>
+              <span v-else class="file-span">{{ file.name }}</span>
+            </div>
+            <div class="file-checkbox">
+              <input type="checkbox" v-model="selectedFiles" :value="file.path" @click="pathDeal(file)" class="select-checkbox" />
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="centered">
-      <FileIndexView />
-    </div>
     <div class="search-section">
-      <SearchText/>
+      <SearchText />
+    </div>
+    <div class="centered">
+      <div class="index-container">
+        <FileIndexView />
+      </div>
     </div>
   </div>
-  
 </template>
 
 <style>
+.app-container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden; /* 隐藏溢出部分 */
+}
+
 .drives-section {
-  width: 33.33%;
+  width: 12%; /* 调整宽度大小 */
   padding: 10px;
   background-color: #f2f2f2;
 }
 
-.drive-button,
-.directory-button,
-.file-span {
-  display: inline-block;
-  width: 100%;
-  height: 25px;
-  padding: 5px;
-  margin: 5px;
-  border: 0.5px solid #000;
-  text-align: center;
-  cursor: pointer;
-}
-
-.drive-button {
-  background-color: yellow;
-}
-
-.directory-button {
-  background-color: yellow;
-}
-
-.file-span {
-  background-color: green;
-  color: #fff;
-}
 
 .files-section {
-  width: 33.67%;
-  padding: 10px;
+  flex: 1;
+  padding: 10px 10px 10px 5px; /* 调整左边延伸的大小 */
   background-color: #f9f9f9;
+  overflow-y: auto;
 }
 
 .current-path {
@@ -79,6 +64,11 @@
   background-color: #f9f9f9;
   padding: 10px;
   z-index: 1;
+}
+
+.files-list-container {
+  max-height: calc(100vh - 140px); /* 设置文件列表容器的最大高度，减去头部和底部部分的高度 */
+  overflow-y: auto; /* 添加滚动样式 */
 }
 
 .files-list {
@@ -108,12 +98,22 @@
 .select-checkbox {
   margin-left: 10px;
 }
+
 .centered {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 100%;
+  width: 33.33%;
+  background-color: #fff;
+  padding: 10px;
 }
+
+.index-container {
+  max-height: calc(100vh - 140px); /* 设置索引容器的最大高度，减去头部和底部部分的高度 */
+  overflow-y: auto; /* 添加滚动样式 */
+}
+
 .search-section {
   flex: 1;
   background-color: #fff;
@@ -164,7 +164,7 @@ export default {
     exploreDirectory(file) {
       this.history.push(this.currentPath); // 将当前路径加入历史记录
       if(file.directory){
-        this.currentPath = file.path + '\\' + file.name;
+        this.currentPath = file.path ;
       }else{
         this.currentPath = file.path;
       }
