@@ -9,7 +9,7 @@ import java.io.File;
 import java.util.*;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = "http://121.196.234.38:8080")
 
 public class FileExplorerController {
     @GetMapping("/drives")

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = "http://121.196.234.38:8080")
 public class FileIndexController {
     private final FileIndexService fileIndexService;
     private final FileIndexRepository fileIndexRepository;

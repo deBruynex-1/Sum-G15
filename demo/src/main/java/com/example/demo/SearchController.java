@@ -10,15 +10,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = "http://121.196.234.38:8080")
 public class SearchController {
     private final FileIndexRepository fileIndexRepository;
 
@@ -37,9 +34,10 @@ public class SearchController {
         // 遍历每个文件索引
         for (FileIndex fileIndex : fileIndexes) {
             String filePath = fileIndex.getFilePath();
-
+            System.out.println("\n"+filePath+"\n");
             if (filePath.endsWith(".txt")) {
                 // 处理txt文件
+                System.out.println("开始处理txt文件\n");
                 searchResults.addAll(searchTxtFile(filePath, keyword));
             } else if (filePath.endsWith(".doc")) {
                 // 处理doc文件
@@ -49,14 +47,14 @@ public class SearchController {
                 searchResults.addAll(searchDocxFile(filePath, keyword));
             }
         }
-
+        System.out.println(searchResults+"\n");
         return searchResults;
     }
 
     private List<SearchResult> searchTxtFile(String filePath, String keyword) {
         List<SearchResult> searchResults = new ArrayList<>();
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+        System.out.println("执行解析txt\n");
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(filePath), "UTF-8"))) {
             String line;
             int lineNumber = 0;
 
@@ -74,9 +72,10 @@ public class SearchController {
             e.printStackTrace();
             // 处理文件读取错误
         }
-
+        System.out.println("txt文件的解析结果：" + searchResults);
         return searchResults;
     }
+
 
     private List<SearchResult> searchDocFile(String filePath, String keyword) {
         List<SearchResult> searchResults = new ArrayList<>();
