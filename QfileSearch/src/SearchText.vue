@@ -176,7 +176,7 @@ export default {
     search() {
       // 发起后端请求进行搜索
       axios
-        .get('http://localhost:8081/search', {
+        .get('http://121.196.234.38:8081/search', {
           params: {
             keyword: this.keyword
           }
